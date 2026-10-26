@@ -1,8 +1,9 @@
 # Laravel TagManager
 
-[![Latest Stable Version](https://poser.pugx.org/label84/laravel-tagmanager/v/stable?style=flat-square)](https://packagist.org/packages/label84/laravel-tagmanager)
+[![Latest Release](https://img.shields.io/github/v/release/pylesoft/laravel-tagmanager?style=flat-square)](https://github.com/pylesoft/laravel-tagmanager/releases)
 [![MIT Licensed](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
-[![Total Downloads](https://img.shields.io/packagist/dt/label84/laravel-tagmanager.svg?style=flat-square)](https://packagist.org/packages/label84/laravel-tagmanager)
+
+Pylesoft's fork of [Label84/laravel-tagmanager](https://github.com/Label84/laravel-tagmanager), distributed through Packistry as `pylesoft/laravel-tagmanager`. PHP classes retain the `Label84\TagManager` namespace.
 
 Easier way to add Google Tag Manager to your Laravel application. Including support for User-ID, E-commerce and Server Side Events (Measurement Protocol).
 
@@ -37,7 +38,7 @@ Read the article on Medium.com for a more detailed instruction: [Medium: Add Goo
 Install the package
 
 ```sh
-composer require label84/laravel-tagmanager
+composer require pylesoft/laravel-tagmanager:^1.5.5
 ```
 
 ### 2. Add the head and body tag to your (layout) view

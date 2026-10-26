@@ -1,5 +1,5 @@
 {
-    "name": "label84/laravel-tagmanager",
+    "name": "pylesoft/laravel-tagmanager",
     "description": "Easier way to add Google Tag Manager to your Laravel application.",
     "type": "library",
     "license": "MIT",
