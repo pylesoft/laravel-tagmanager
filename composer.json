@@ -32,6 +32,9 @@
           "Label84\\TagManager\\": "src"
       }
     },
+    "scripts": {
+        "test": "@php vendor/bin/phpunit"
+    },
     "minimum-stability": "dev",
     "prefer-stable": true
 }

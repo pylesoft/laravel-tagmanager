@@ -263,6 +263,7 @@ dd(
 ## Tests
 
 ```sh
+composer test
 ./vendor/bin/pint
 ./vendor/bin/phpstan analyze
 ```
