@@ -37,6 +37,77 @@ class TagManagerMiddlewareTest extends TestCase
         $this->session->start();
     }
 
+    public function test_user_identity_stays_bounded_across_requests_without_a_rendered_head(): void
+    {
+        for ($request = 0; $request < 40; $request++) {
+            $this->handleRequest(function (TagManager $manager): Response {
+                $manager->setUserId('synthetic-user');
+
+                return new RedirectResponse('/next');
+            });
+
+            $this->assertSame([['user_id' => 'synthetic-user']], $this->session->get('tagmanager'));
+        }
+    }
+
+    public function test_existing_duplicate_identities_are_replaced_without_losing_tracking_events(): void
+    {
+        $purchase = $this->purchaseEvent() + ['user_id' => 'old-user'];
+        $this->session->flash('tagmanager', [
+            ['user_id' => 'old-user'],
+            $purchase,
+            ['user_id' => 'old-user'],
+            ['event' => 'login'],
+        ]);
+        $this->persistSession();
+
+        $this->handleRequest(function (TagManager $manager): Response {
+            $this->assertSame($manager, $manager->setUserId('current-user'));
+
+            return new RedirectResponse('/next');
+        });
+
+        $this->assertSame([
+            $purchase,
+            ['event' => 'login'],
+            ['user_id' => 'current-user'],
+        ], $this->session->get('tagmanager'));
+    }
+
+    public function test_bounded_identity_is_delivered_once_when_the_head_renders(): void
+    {
+        for ($request = 0; $request < 3; $request++) {
+            $this->handleRequest(function (TagManager $manager): Response {
+                $manager->setUserId('synthetic-user');
+
+                return new RedirectResponse('/next');
+            });
+        }
+
+        $this->handleRequest(function (TagManager $manager): Response {
+            $manager->setUserId('synthetic-user');
+            $head = new Head($manager, $this->session);
+            $this->assertSame([['user_id' => 'synthetic-user']], $head->render()->getData()['data']->all());
+
+            return new Response('rendered');
+        });
+
+        $this->assertFalse($this->session->has('tagmanager'));
+    }
+
+    public function test_setting_identity_preserves_named_tracking_fields(): void
+    {
+        $manager = new TagManager;
+        $manager->set(collect(['currency' => 'USD', ['user_id' => 'old-user']]));
+
+        $manager->setUserId('current-user');
+
+        $this->assertSame([
+            'currency' => 'USD',
+            ['user_id' => 'current-user'],
+        ], $manager->get()->all());
+    }
+
     public function test_empty_tracking_data_does_not_accumulate_across_requests(): void
     {
         for ($request = 0; $request < 40; $request++) {
