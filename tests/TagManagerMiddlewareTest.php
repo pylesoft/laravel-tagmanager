@@ -95,6 +95,19 @@ class TagManagerMiddlewareTest extends TestCase
         $this->assertFalse($this->session->has('tagmanager'));
     }
 
+    public function test_setting_identity_preserves_named_tracking_fields(): void
+    {
+        $manager = new TagManager;
+        $manager->set(collect(['currency' => 'USD', ['user_id' => 'old-user']]));
+
+        $manager->setUserId('current-user');
+
+        $this->assertSame([
+            'currency' => 'USD',
+            ['user_id' => 'current-user'],
+        ], $manager->get()->all());
+    }
+
     public function test_empty_tracking_data_does_not_accumulate_across_requests(): void
     {
         for ($request = 0; $request < 40; $request++) {

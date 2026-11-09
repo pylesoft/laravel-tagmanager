@@ -60,8 +60,7 @@ class TagManager
     {
         $this->data = $this->data
             ->reject(fn ($item) => is_array($item) && array_keys($item) === ['user_id'])
-            ->values();
-        $this->data->push(['user_id' => $userId]);
+            ->merge([['user_id' => $userId]]);
 
         return $this;
     }
