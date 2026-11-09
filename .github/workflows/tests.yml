@@ -35,6 +35,9 @@ jobs:
       - name: Select Laravel version
         run: composer require --dev "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-update --no-interaction
       - name: Install dependencies
+        env:
+          # Allow advisory-affected Laravel 11 releases in this isolated compatibility test only.
+          COMPOSER_POLICY_ADVISORIES_BLOCK: ${{ matrix.laravel == '^11.0' && '0' || '1' }}
         run: composer update --prefer-dist --no-interaction --no-progress
       - name: Run tests
         run: composer test
